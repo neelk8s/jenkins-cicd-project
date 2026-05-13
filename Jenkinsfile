@@ -19,24 +19,23 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                echo '=========================================='
-                echo 'Installing Python dependencies...'
-                echo '=========================================='
-                sh 'pip install -r requirements.txt'
+        echo 'Installing Python dependencies...'
+        sh '''
+            python3 -m pip install --upgrade pip
+            python3 -m pip install -r requirements.txt
+        '''
             }
         }
 
         stage('Run Tests') {
             steps {
-                echo '=========================================='
-                echo 'Running automated tests...'
-                echo '=========================================='
-                sh 'pytest tests/ -v'
+        echo 'Running automated tests...'
+        sh 'python3 -m pytest tests/ -v'
             }
-            post {
-                success { echo 'All tests passed!' }
-                failure { echo 'Tests failed! Pipeline stopped.' }
-            }
+    post {
+        success { echo 'All tests passed!' }
+        failure { echo 'Tests failed! Pipeline stopped.' }
+        }
         }
 
         stage('Build Docker Image') {
