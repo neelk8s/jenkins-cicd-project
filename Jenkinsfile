@@ -1,36 +1,26 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.11-slim'
-            args '--user root'
-        }
-    }
-
-    environment {
-        APP_NAME = "flask-cicd-app"
-        DOCKER_IMAGE = "flask-cicd-app:latest"
-    }
+    agent any
 
     stages {
 
         stage('Checkout') {
             steps {
-                echo 'Pulling latest code from GitHub...'
+                echo 'Pulling code from GitHub...'
                 checkout scm
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                echo 'Installing Python dependencies...'
-                sh 'python3 -m pytest tests/ -v'
+                echo 'Installing dependencies...'
+                sh 'pip3 install -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
                 echo 'Running tests...'
-                sh 'pytest tests/ -v'
+                sh 'python3 -m pytest tests/ -v'
             }
             post {
                 success { echo 'All tests passed!' }
@@ -40,7 +30,7 @@ pipeline {
     }
 
     post {
-        success { echo 'PIPELINE COMPLETED SUCCESSFULLY!' }
-        failure { echo 'PIPELINE FAILED! Check logs above.' }
+        success { echo 'PIPELINE COMPLETED!' }
+        failure { echo 'PIPELINE FAILED!' }
     }
 }
