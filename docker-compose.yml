@@ -1,0 +1,22 @@
+services:
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  flask-app:
+    build: .
+    container_name: flask-cicd-app
+    ports:
+      - "5002:5000"
+    restart: unless-stopped
+
+volumes:
+  jenkins_data:
